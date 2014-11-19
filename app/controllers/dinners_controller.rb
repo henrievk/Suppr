@@ -12,6 +12,15 @@ class DinnersController < ApplicationController
   # GET /dinners/1
   # GET /dinners/1.json
   def show
+    # Use this to calculate the path to the suppr
+    # request.location.latitude
+    # request.location.longitude
+
+    @hash = Gmaps4rails.build_markers(@dinner) do |dinner, marker|
+      marker.lat dinner.latitude
+      marker.lng dinner.longitude
+      marker.title dinner.title
+    end
     @comment = Comment.new
   end
 
@@ -30,9 +39,10 @@ class DinnersController < ApplicationController
     @dinner = Dinner.new(dinner_params)
     @dinner.seats_available = @dinner.seats
     @dinner.host = current_user
+    current_user.n_hosted += 1
 
     respond_to do |format|
-      if @dinner.save
+      if current_user.save and @dinner.save
         format.html { redirect_to @dinner, notice: 'Supper successfully created.' }
         format.json { render :show, status: :created, location: @dinner }
       else
@@ -50,7 +60,7 @@ class DinnersController < ApplicationController
       success = true
     end
     respond_to do |format|
-      # FIXME: check seats and seats_available      
+      # FIXME: check seats and seats_available
       if success and @dinner.update(dinner_params)
         format.html { redirect_to @dinner, notice: 'Suppr has been successfully updated.' }
         format.json { render :show, status: :ok, location: @dinner }
@@ -66,11 +76,13 @@ class DinnersController < ApplicationController
   def destroy
     success = false
     if @dinner.host == current_user
-      @dinner.destroy
-      success = true
+      current_user.n_hosted -= 1
+      if current_user.save and @dinner.destroy
+        success = true
+      end
     end
     respond_to do |format|
-      format.html { redirect_to dinners_url, notice: success ? 'Suppr has been successfully destroyed.' : 'You can not delete this Suppr' }
+      format.html { redirect_to dinners_url, notice: success ? 'Suppr has been successfully deleted.' : 'You can not delete this Suppr' }
       format.json { head :no_content }
     end
   end
@@ -80,8 +92,10 @@ class DinnersController < ApplicationController
     rsvp = @dinner.reservations.find_by(user_id: current_user.id, dinner: @dinner)
     if rsvp and @dinner.seats_available < @dinner.seats
       @dinner.seats_available += 1
-      rsvp.destroy
-      success = true
+      current_user.n_joined -= 1
+      if current_user.save and rsvp.destroy
+        success = true
+      end
     end
 
     respond_to do |format|
@@ -116,8 +130,10 @@ class DinnersController < ApplicationController
       success = false
       error_msg = "no seats available."
     else
+      current_user.n_joined += 1
       @dinner.seats_available -= 1
       begin
+        current_user.save!
         @dinner.reservations.create!({:dinner_id => @dinner.id, :user_id => current_user.id, :date => @dinner.date, :yday => @dinner.date.yday})
       rescue
         success = false
@@ -150,7 +166,7 @@ class DinnersController < ApplicationController
     end
   end
 
-  def search    
+  def search
     query = params[:q]
     @dinners = Dinner.where("title = :query OR  category = :query OR price = :query OR seats_available = :query", query: query).order('date').page(params[:page]).per(25)
   end
@@ -163,6 +179,6 @@ class DinnersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dinner_params
-      params.require(:dinner).permit(:image, :date, :location, :title, :description, :category, :price, :seats, :stamp)
+      params.require(:dinner).permit(:currency, :image, :date, :location, :title, :description, :category, :price, :seats, :stamp)
     end
 end

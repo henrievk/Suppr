@@ -2,16 +2,31 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.reservations
+.users
 {
 
-  .container{
-  width: 1024px;
-  }      
-  .image_full
-  {
-    width:50%;
+  .container {
+   height: 30em;
+   clear: both;
   }
+
+  .jumbotron{
+   height: 65%;
+  }
+
+  .div-reservations{
+    float:left;
+    clear: left;
+    width: 100%;
+   }
+
+   .info-div {
+     overflow: hidden;
+     width: 50%;
+     height: 50%;
+     float: left
+  }
+
 
   #list_reservations
   {
@@ -21,11 +36,6 @@
   .td_side
   {
         width: 20em;
-  }
-
-  .index-container
-  {
-        width: 100%;
   }
 
   .list_reservations_row
@@ -42,7 +52,7 @@
       margin-top:0.1em;
       margin-left:4em;
 
-      height: 12em;
+      height: 11em;
       width: 12em;
       background-color: gray;
       img
@@ -61,15 +71,6 @@
       padding-left:100px;
     }
 
-    .div_join
-    {
-      height: 3.8em;
-      width: 11.4em;
-      border: 2px solid #efefef;
-      margin-top:0.1em;
-      margin-left: 5em;
-    }
-
     .div_more
     {
       height: 3.8em;
@@ -79,65 +80,15 @@
       margin-left: 5em;
     }
 
-    .div_delete
-    {
-      height: 3.8em;
-      width: 11.4em;
-      border: 2px solid #efefef;
-      margin-top:0.1em;
-      margin-left: 5em;
-    }
-
   }
 
- .host_suppr
-  {
-    height: 3.8em;
-    width: 11.4em;
-    margin-left: 81%;
-    text-align:center;
-  }
-
-  .reservation-div {
+  .user-pic {
     overflow: hidden;
-    width: 50%;
-    height: 50%;
-    float: left;
+    margin-left: 15%;
   }
 
   .reservation-pic {
     overflow: hidden;
-    height: 50%;
-    width: 50%;
-  }
-
-  .form-control.seats {
-     width: 20%;
-     float: left;
-     margin-right: 3%;
-     margin-bottom: 2%;
-  }
-
-  .form-control.price {
-     width: 20%;
-     overflow: hidden;
-     margin-bottom: 2%;
-  }
-
-  .form-control.desc {
-     width: 85%;
-     overflow: hidden;
-     margin-bottom: 2%;
-  }
-
-  .div-seats {
-     width: 20%;
-     margin-right: 3%;
-     margin-bottom: 2%;
-  }
-
-  .reservation-pic {
-    overflow: hidden;  
     height: 50%;
     width: 50%;
   }
